@@ -1,0 +1,16 @@
+@font-face {
+    font-family: poppins-light;
+    src: url("/Poppins/Poppins-Light.ttf");
+}
+
+@font-face {
+    font-family: poppins-thin;
+    src: url("/Poppins/Poppins-Thin.ttf");
+}
+
+main {
+    background-color: #000;
+    min-height: 50vh;
+    font-family: poppins;
+    font-weight: 200;
+}
