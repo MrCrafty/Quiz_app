@@ -59,9 +59,10 @@ const handleSubmit = async (e) => {
 <template lang="html">
   <div class="login">
     <div class="login-modal bg-dark">
-      <button class="modal-close btn btn-danger" @click="props.CloseModal">
-        X
-      </button>
+      <button
+        class="modal-close btn btn-close text-bg-danger"
+        @click="props.CloseModal"
+      ></button>
       <h3 class="mt-4 fs-1 text-white">User Register</h3>
       <img src="/login.png" class="login-logo" />
       <form @submit="handleSubmit" class="login-form">
@@ -91,6 +92,7 @@ const handleSubmit = async (e) => {
             placeholder="Enter your address"
             maxlength="250"
             required
+            @change="(e) => (address = e.target.value)"
           ></textarea>
           <input
             type="number"

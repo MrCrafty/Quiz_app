@@ -13,7 +13,7 @@ def status():
 
 
 @api.route("/getServices", methods=["GET"])
-@jwt_required()
+# @jwt_required()
 def getServices():
     serviceList = []
     services = Services.query.all()

@@ -51,6 +51,7 @@ const handleSubmit = async (e) => {
     )
     .then(
       (data) => {
+        alert("Registerd Successfully, please Login to continue");
         props.CloseModal();
         window.location.reload();
       },
@@ -65,9 +66,10 @@ const handleSubmit = async (e) => {
 <template lang="html">
   <div class="login">
     <div class="login-modal bg-dark">
-      <button class="modal-close btn btn-danger" @click="props.CloseModal">
-        X
-      </button>
+      <button
+        class="modal-close btn btn-close text-bg-danger"
+        @click="props.CloseModal"
+      ></button>
       <h3 class="my-4 fs-2 text-white">Professional Register</h3>
       <form @submit="handleSubmit" class="login-form">
         <div class="input-wrapper text-white">
@@ -91,13 +93,13 @@ const handleSubmit = async (e) => {
           />
           <select
             name="services"
-            class="input services-dropdown bg-transparent"
+            class="input services-dropdown"
             required
             @change="(e) => (selectedServ = e.target.value)"
           >
             <option value="">Please select a service</option>
-            <option v-for="service in services" :value="service.Id">
-              {{ service.Name }}
+            <option v-for="service in services" :value="service.id">
+              {{ service.name }}
             </option>
           </select>
           <input
@@ -169,6 +171,9 @@ const handleSubmit = async (e) => {
   </div>
 </template>
 <style lang="css">
+.services-dropdown option {
+  color: black !important;
+}
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {

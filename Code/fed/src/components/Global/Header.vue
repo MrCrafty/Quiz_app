@@ -35,6 +35,7 @@ const ProfRegisterOpen = () => {
 };
 const user = computed(() => store.state.user);
 const isLoggedIn = VueCookies.get("access_token") != null;
+const xp = isLoggedIn ? JSON.parse(store.state.user.xp) : "";
 //handlers
 const handleLogout = async () => {
   await axios
@@ -69,7 +70,14 @@ const handleLogout = async () => {
       <div class="d-flex justify-content-between align-items-center py-2">
         <span class="logo h2">Homestead Helpers</span>
         <ul class="nav align-items-center">
-          <li v-if="isLoggedIn">Hello, {{ user.email }}</li>
+          <li v-if="isLoggedIn && user.role == 'admin'">Hello, Admin</li>
+          <li
+            v-if="
+              isLoggedIn && (user.role == 'user' || user.role == 'professional')
+            "
+          >
+            Hello, {{ xp.name }}
+          </li>
           <li class="nav-link"><router-link to="/">Home</router-link></li>
           <!-- <li class="nav-link">
             <router-link to="/search">Search</router-link>
@@ -78,7 +86,14 @@ const handleLogout = async () => {
             <router-link to="/summary">Summary</router-link>
           </li> -->
           <li v-if="isLoggedIn">
-            <button class="btn text-white bg-primary" @click="handleLogout">
+            <router-link
+              class="profile-btn btn btn-primary text-white"
+              to="/profile"
+              >Profile</router-link
+            >
+          </li>
+          <li v-if="isLoggedIn">
+            <button class="btn text-white bg-danger ms-2" @click="handleLogout">
               Logout
             </button>
           </li>
@@ -86,13 +101,6 @@ const handleLogout = async () => {
             <button class="btn text-white bg-primary" @click="LoginOpen">
               Login
             </button>
-          </li>
-          <li v-if="isLoggedIn">
-            <router-link
-              class="profile-btn btn btn-danger text-white ms-2"
-              to="/profile"
-              >Profile</router-link
-            >
           </li>
         </ul>
       </div>

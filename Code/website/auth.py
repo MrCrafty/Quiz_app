@@ -44,12 +44,12 @@ def register():
     password = data.get('password')
     role = data.get('role', 'user')  # Default to 'user' role if not provided
     xp = data.get('xp', {})  # Default to empty XP data if not provided
-
+    print(email, password, role, xp)
     if User.query.filter_by(email=email).first():
         return jsonify({"error": "User already exists"}), 400
 
     new_user = User(
-        email=email, password=generate_password_hash(password), role=role, xp=xp)
+        email=email, password=password, role=role, xp=xp)
     db.session.add(new_user)
     db.session.commit()
     return jsonify({"message": "User registered successfully"}), 201
@@ -61,7 +61,8 @@ def getuser():
     curr_user = get_jwt_identity()
     if (curr_user == None):
         return jsonify({"error": "user not logged in"}), 400
-    return jsonify({"email": curr_user["email"], "role": curr_user["role"]})
+    user = User.query.filter_by(email=curr_user['email']).first()
+    return jsonify({"email": user.email, "role": user.role, "xp": user.xp})
 
 
 @auth.route("token", methods=["GET"])
