@@ -43,7 +43,7 @@ def create_app():
         manager = User.query.filter_by(email="admin@store.com").all()
         if (manager == []):
             new_user = User(email="admin@store.com",
-                            password=generate_password_hash("adminmanager"), role="admin")
+                            password="adminmanager", role="admin")
             db.session.add(new_user)
             db.session.commit()
     return app

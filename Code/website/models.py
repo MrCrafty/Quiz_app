@@ -27,6 +27,7 @@ class Services(db.Model):
     description = db.Column(db.Text, nullable=False)
     price = db.Column(db.Integer, nullable=False)
     time_required = db.Column(db.Integer, nullable=True)
+    category = db.Column(db.Text, db.ForeignKey('category.id'), nullable=False)
 
     def __init__(self, name, description, price, time_required=0):
         self.name = name
@@ -56,3 +57,10 @@ class ServiceRequest(db.Model):
         self.date_of_request = date_of_request
         self.date_of_completion = date_of_completion
         self.remarks = remarks
+
+
+class Category(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    services = db.relationship('Services', backref='category', lazy=True)

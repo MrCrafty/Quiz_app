@@ -3,12 +3,15 @@ import axios from "axios";
 import { computed, ref } from "vue";
 import { useStore } from "vuex";
 import AddService from "../Global/AddService.vue";
+import EditService from "../Global/EditService.vue";
 const store = useStore();
 
 const services = computed(() => store.state.services);
 const professionals = computed(() => store.state.professionals);
 const serviceRequest = computed(() => store.state.serviceRequests);
 const addServiceModal = ref(false);
+const editServiceModal = ref(false);
+const editService = ref(null);
 const handleDeleteService = async (id) => {
   if (confirm("Are you sure you want to delete this service?")) {
     console.log("Delete Service");
@@ -41,6 +44,10 @@ const handleDeleteService = async (id) => {
       );
   }
 };
+const closeeditServiceModal = () => {
+  editServiceModal.value = false;
+  editService.value = null;
+};
 const closeaddServiceModal = () => {
   addServiceModal.value = false;
 };
@@ -51,11 +58,16 @@ const closeaddServiceModal = () => {
       v-if="addServiceModal"
       :closeaddServiceModal="closeaddServiceModal"
     />
+    <EditService
+      v-if="editServiceModal"
+      :serviceId="editService"
+      :closeeditServiceModal="closeeditServiceModal"
+    />
     <div class="row text-light">
       <div class="col-12 services-wrapper bg-dark py-5 px-5 my-4">
         <h2 class="section-header">Services</h2>
         <hr />
-        <table v-if="services.length > 0" class="services-table">
+        <table v-if="services && services.length > 0" class="services-table">
           <thead>
             <tr>
               <th>ID</th>
@@ -70,7 +82,16 @@ const closeaddServiceModal = () => {
               <td>{{ service.name }}</td>
               <td>{{ service.price }}</td>
               <td class="action-btns d-flex justify-content-around w-50 m-auto">
-                <button class="btn btn-info">Edit</button
+                <button
+                  class="btn btn-info"
+                  @click="
+                    () => {
+                      editService = service.id;
+                      editServiceModal = !editServiceModal;
+                    }
+                  "
+                >
+                  Edit</button
                 ><button
                   class="btn btn-danger"
                   @click="handleDeleteService(service.id)"
@@ -92,7 +113,10 @@ const closeaddServiceModal = () => {
       <div class="col-12 prof-wrapper bg-dark py-5 px-5 my-4">
         <h2 class="prof-header">Professionals</h2>
         <hr />
-        <table v-if="professionals.length > 0" class="prof-table fs-5">
+        <table
+          v-if="professionals && professionals.length > 0"
+          class="prof-table fs-5"
+        >
           <thead>
             <tr>
               <th>ID</th>
@@ -108,7 +132,10 @@ const closeaddServiceModal = () => {
       <div class="col-12 ser-req-wrapper bg-dark py-5 px-5 my-4">
         <h2 class="ser-req-header">Service Requests</h2>
         <hr />
-        <table v-if="serviceRequest.length > 0" class="ser-req-table fs-5">
+        <table
+          v-if="serviceRequest && serviceRequest.length > 0"
+          class="ser-req-table fs-5"
+        >
           <thead>
             <tr>
               <th>ID</th>
