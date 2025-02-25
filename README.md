@@ -9,11 +9,11 @@ After installing the Virtual Environment, pip install -r requirements.txt and th
 ## **Credentials for Different Roles**
 
 - Admin
+
   - username : admin@store.com
   - password : adminmanager
+
 - User
+
   - username : user@store.com
   - password : useruser
-- Professional
-  - username : professional@store.com
-  - password : professional
