@@ -8,9 +8,22 @@
     src: url("/Poppins/Poppins-Thin.ttf");
 }
 
+@import url('https://fonts.googleapis.com/css2?family=Edu+AU+VIC+WA+NT+Arrows:wght@400..700&display=swap');
+
+html {
+    scroll-behavior: smooth;
+}
+
 main {
-    background-color: #000;
+
     min-height: 50vh;
     font-family: poppins;
     font-weight: 200;
+}
+
+.logo {
+    font-family: "Edu AU VIC WA NT Arrows", cursive !important;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
 }

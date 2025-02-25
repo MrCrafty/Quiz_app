@@ -63,8 +63,3 @@ def getuser():
         return jsonify({"error": "user not logged in"}), 400
     user = User.query.filter_by(email=curr_user['email']).first()
     return jsonify({"email": user.email, "role": user.role, "xp": user.xp})
-
-
-@auth.route("token", methods=["GET"])
-def generateToken():
-    return jsonify({"access_token": create_access_token({"email": "guest@store.com", "role": "guest"})}), 200

@@ -1,6 +1,6 @@
 <script setup>
 import { useStore } from "vuex/dist/vuex.cjs.js";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 
 import axios from "axios";
 const store = useStore();
@@ -11,6 +11,8 @@ const serviceName = ref("");
 const serviceDescription = ref("");
 const basePrice = ref();
 const timeRequired = ref();
+const category = ref(null);
+const categories = computed(() => store.state.categories);
 const handleSubmit = async (e) => {
   e.preventDefault();
   await axios
@@ -21,6 +23,7 @@ const handleSubmit = async (e) => {
         description: serviceDescription.value,
         price: basePrice.value,
         time_required: timeRequired.value,
+        category_id: category.value,
       }),
       {
         headers: {
@@ -75,7 +78,7 @@ const handleSubmit = async (e) => {
             @change="(e) => (serviceDescription = e.target.value)"
           ></textarea>
           <input
-            type="text"
+            type="number"
             placeholder="Base Price"
             name="base-price"
             required
@@ -84,7 +87,7 @@ const handleSubmit = async (e) => {
             @change="(e) => (basePrice = e.target.value)"
           />
           <input
-            type="text"
+            type="number"
             placeholder="Time Required(in Hours)"
             name="time-required"
             required
@@ -153,5 +156,8 @@ const handleSubmit = async (e) => {
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+.category-dropdown option {
+  color: black;
 }
 </style>

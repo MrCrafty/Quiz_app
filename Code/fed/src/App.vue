@@ -6,11 +6,17 @@ import Footer from "./components/Global/Footer.vue";
 <template>
   <div>
     <header><Header /></header>
-    <main class="bg-secondary">
+    <main>
       <router-view></router-view>
     </main>
     <footer><Footer /></footer>
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+</style>

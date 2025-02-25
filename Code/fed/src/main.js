@@ -16,7 +16,7 @@ const store = createStore({
             isLoginOpen: false,
             services: [],
             professionals: [],
-            serviceRequests: []
+            serviceRequests: [],
         }
     },
     mutations: {
@@ -34,15 +34,16 @@ const store = createStore({
         },
         setServiceRequests(state, payload) {
             state.serviceRequests = payload
-        }
+        },
     }
 
 })
+
 await axios.get("http://localhost:5000/api/getServices", { withCredentials: true }).then((data) => store.commit('setServices', data.data.data), (err) => console.log(err.response.data))
 if (VueCookies.get("access_token") != null) {
     await axios.get("http://localhost:5000/getuser", { withCredentials: true }).then((data) => store.commit('setUser', data.data), (err) => console.log(err.response.data))
-    await axios.get("http://localhost:5000/api/getServiceRequests", { withCredentials: true }).then((data) => console.log(data.data), (err) => console.log(err.response.data))
-    await axios.get("http://localhost:5000/api/getProfessionals", { withCredentials: true }).then((data) => console.log(data.data), (err) => console.log(err.response.data))
+    await axios.get("http://localhost:5000/api/getServiceRequests", { withCredentials: true }).then((data) => store.commit("setServiceRequests", data.data.data), (err) => console.log(err.response.data))
+    await axios.get("http://localhost:5000/api/getProfessionals", { withCredentials: true }).then((data) => store.commit("setProfessionals", data.data.data), (err) => console.log(err.response.data))
 }
 const router = createRouter({
     history: createWebHistory(),

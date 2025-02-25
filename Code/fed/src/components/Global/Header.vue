@@ -68,7 +68,9 @@ const handleLogout = async () => {
   <div class="container">
     <div class="row">
       <div class="d-flex justify-content-between align-items-center py-2">
-        <span class="logo h2">Homestead Helpers</span>
+        <span class="logo h2"
+          ><router-link>Homestead Helpers</router-link></span
+        >
         <ul class="nav align-items-center">
           <li v-if="isLoggedIn && user.role == 'admin'">Hello, Admin</li>
           <li

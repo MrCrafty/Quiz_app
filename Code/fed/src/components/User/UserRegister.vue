@@ -10,7 +10,6 @@ const props = defineProps({
   CloseModal: Function,
 });
 
-const store = useStore();
 const email = ref("");
 const password = ref("");
 const confirmPassword = ref("");

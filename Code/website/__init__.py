@@ -1,10 +1,10 @@
 from flask import Flask
 from flask_jwt_extended import JWTManager
 from flask_login import LoginManager
-from werkzeug.security import generate_password_hash
 from flask_sqlalchemy import SQLAlchemy
 from os import path
 from flask_cors import CORS
+
 db = SQLAlchemy()
 DB_NAME = 'database.db'
 
@@ -26,7 +26,7 @@ def create_app():
     login_manager = LoginManager()
     login_manager.login_view = 'auth.login'
     login_manager.init_app(app)
-    from .models import User
+    from .models import User, Services
 
     @login_manager.user_loader
     def user_loader(id):
@@ -42,9 +42,18 @@ def create_app():
     with app.app_context():
         manager = User.query.filter_by(email="admin@store.com").all()
         if (manager == []):
-            new_user = User(email="admin@store.com",
-                            password="adminmanager", role="admin")
+            admin = User(email="admin@store.com",
+                         password="adminmanager", role="admin")
+            new_user = User(email="user@store.com",
+                            password="useruser", role="user", xp={"name": "Store User", "address": "123 Main Street", "pincode": "123456"})
+            new_service = Services(
+                name="Default Service", description="Default Service", price=100, time_required=1)
+            new_professional = User(email="professional@store.com", password="professional", role="professional", xp={
+                                    "name": "Store Professional", "address": "123 Main Street", "pincode": "123456", "status": "active", "service": "1", "experience": "10"})
             db.session.add(new_user)
+            db.session.add(new_professional)
+            db.session.add(admin)
+            db.session.add(new_service)
             db.session.commit()
     return app
 

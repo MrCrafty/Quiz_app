@@ -1,4 +1,5 @@
 from flask_bcrypt import bcrypt
+import datetime
 from . import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import json
@@ -21,46 +22,46 @@ class User(db.Model):
         return check_password_hash(self.password, password)
 
 
-class Services(db.Model):
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+class Subject(db.Model):
+    id = db.Column(db.Integer(), primary_key=True, autoincrement=True)
     name = db.Column(db.String(100), nullable=False)
-    description = db.Column(db.Text, nullable=False)
-    price = db.Column(db.Integer, nullable=False)
-    time_required = db.Column(db.Integer, nullable=True)
-    category = db.Column(db.Text, db.ForeignKey('category.id'), nullable=False)
-
-    def __init__(self, name, description, price, time_required=0):
-        self.name = name
-        self.description = description
-        self.price = price
-        self.time_required = time_required
+    description = db.Column(db.String(100), nullable=False)
+    chapters = db.relationship('Chapter', backref='subject', lazy=True)
+    xp = db.Column(db.Integer(), nullable=False)
 
 
-class ServiceRequest(db.Model):
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    customer_id = db.Column(
-        db.Integer, db.ForeignKey('user.id'), nullable=False)
-    professional_id = db.Column(
-        db.Integer, db.ForeignKey('user.id'), nullable=False)
-    service_id = db.Column(db.Integer, db.ForeignKey(
-        'services.id'), nullable=False)
-    status = db.Column(db.String(100), nullable=False)
-    date_of_request = db.Column(db.DateTime, nullable=False)
-    date_of_completion = db.Column(db.DateTime, nullable=True)
-    remarks = db.Column(db.Text, nullable=True)
-
-    def __init__(self, customer_id, professional_id, service_id, status, date_of_request, date_of_completion=None, remarks=None):
-        self.customer_id = customer_id
-        self.professional_id = professional_id
-        self.service_id = service_id
-        self.status = status
-        self.date_of_request = date_of_request
-        self.date_of_completion = date_of_completion
-        self.remarks = remarks
-
-
-class Category(db.Model):
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+class Chapter(db.Model):
+    id = db.Column(db.Integer(), primary_key=True, autoincrement=True)
     name = db.Column(db.String(100), nullable=False)
-    description = db.Column(db.Text, nullable=False)
-    services = db.relationship('Services', backref='category', lazy=True)
+    description = db.Column(db.String(100), nullable=False)
+    xp = db.Column(db.Integer(), nullable=False)
+    subject_id = db.Column(db.Integer(), db.ForeignKey(
+        'subject.id'), nullable=False)
+
+
+class Questions(db.Model):
+    id = db.Column(db.Integer(), primary_key=True, autoincrement=True)
+    question = db.Column(db.String(100), nullable=False)
+    options = db.Column(db.Text, nullable=False)
+    answer = db.Column(db.String(100), nullable=False)
+    chapter_id = db.Column(db.Integer(), db.ForeignKey(
+        'chapter.id'), nullable=False)
+    chapter = db.relationship('Chapter', backref='questions', lazy=True)
+
+
+class Quiz(db.Model):
+    id = db.Column(db.Integer(), primary_key=True, autoincrement=True)
+    chapter_id = db.Column(db.Integer(), db.ForeignKey(
+        'chapter.id'), nullable=False)
+    date = db.Column(db.DateTime)
+    time_duration = db.Column(db.Datetime, nullable=False)
+
+
+class Scores(db.Model):
+    id = db.Column(db.Integer(), primary_key=True, autoincrement=True)
+    user_id = db.Column(db.Integer(), db.ForeignKey(
+        'user.id'), nullable=False)
+    quiz_id = db.Column(db.Integer(), db.ForeignKey(
+        'quiz.id'), nullable=False)
+    attempt_timestamp = db.Column(db.DateTime)
+    score = db.Column(db.Integer(), nullable=False)
