@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask import Flask
 from flask_jwt_extended import JWTManager
 from flask_login import LoginManager
@@ -26,7 +27,7 @@ def create_app():
     login_manager = LoginManager()
     login_manager.login_view = 'auth.login'
     login_manager.init_app(app)
-    from .models import User, Services
+    from .models import User
 
     @login_manager.user_loader
     def user_loader(id):
@@ -46,14 +47,8 @@ def create_app():
                          password="adminmanager", role="admin")
             new_user = User(email="user@store.com",
                             password="useruser", role="user", xp={"name": "Store User", "address": "123 Main Street", "pincode": "123456"})
-            new_service = Services(
-                name="Default Service", description="Default Service", price=100, time_required=1)
-            new_professional = User(email="professional@store.com", password="professional", role="professional", xp={
-                                    "name": "Store Professional", "address": "123 Main Street", "pincode": "123456", "status": "active", "service": "1", "experience": "10"})
-            db.session.add(new_user)
-            db.session.add(new_professional)
             db.session.add(admin)
-            db.session.add(new_service)
+            db.session.add(new_user)
             db.session.commit()
     return app
 
