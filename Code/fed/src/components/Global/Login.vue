@@ -1,18 +1,25 @@
 <script setup>
 import { useStore } from "vuex/dist/vuex.cjs.js";
+import VueCookies from "vue-cookies";
 import { ref } from "vue";
 
 import axios from "axios";
-const props = defineProps({
-  LoginOpen: Function,
-  UserRegisterOpen: Function,
-  ProfRegisterOpen: Function,
-  CloseModal: Function,
-});
 
-const store = useStore();
+const handleLogout = async () => {
+  await axios
+    .get("http://localhost:5000/logout", { withCredentials: true })
+    .then(() => (window.location.href = "/"));
+};
+const isLoggedIn = VueCookies.get("access_token") != null;
+const isLoginOpen = ref(false);
 const email = ref("");
 const password = ref("");
+const closeLogin = () => {
+  isLoginOpen.value = false;
+};
+const openLogin = () => {
+  isLoginOpen.value = true;
+};
 const handleSubmit = async (e) => {
   e.preventDefault();
   await axios
@@ -31,7 +38,7 @@ const handleSubmit = async (e) => {
     )
     .then(
       (data) => {
-        props.CloseModal();
+        closeLogin();
         window.location.reload();
       },
       (data) => {
@@ -43,11 +50,22 @@ const handleSubmit = async (e) => {
 };
 </script>
 <template lang="html">
-  <div class="login">
+  <li v-if="isLoggedIn">
+    <button
+      class="btn text-white bg-black rounded-pill py-2 px-3 ms-2"
+      @click="handleLogout"
+    >
+      Logout
+    </button>
+  </li>
+  <li v-else>
+    <button class="btn text-white bg-primary" @click="openLogin">Login</button>
+  </li>
+  <div class="login" v-if="!isLoggedIn && isLoginOpen">
     <div class="login-modal bg-dark">
       <button
         class="modal-close btn btn-close text-bg-danger"
-        @click="props.CloseModal"
+        @click="closeLogin"
       ></button>
       <h3 class="mt-4 fs-1 text-white">Login</h3>
       <img src="/login.png" class="login-logo" />
@@ -79,13 +97,7 @@ const handleSubmit = async (e) => {
       </form>
       <div class="mt-3 d-flex gap-3">
         <button class="btn text-warning" @click="props.UserRegisterOpen">
-          Register as User
-        </button>
-        <button
-          class="prof-register btn text-info"
-          @click="props.ProfRegisterOpen"
-        >
-          Register as Professional
+          Not account yet? <strong>Register</strong>
         </button>
       </div>
     </div>
@@ -123,7 +135,7 @@ const handleSubmit = async (e) => {
 .login-modal {
   border: 2px solid white;
   border-radius: 10px;
-  padding-inline: 2rem;
+  padding-inline: 4rem;
   padding-block-end: 2rem;
   z-index: 2;
   display: flex;

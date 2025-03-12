@@ -1,13 +1,11 @@
 <script setup>
 import { computed, ref } from "vue";
 import { useStore } from "vuex";
-import UserBookServiceModal from "./UserBookServiceModal.vue";
 const servicesModal = ref({
   isOpen: false,
   service: null,
 });
 const store = useStore();
-const services = computed(() => store.state.services);
 </script>
 <template>
   <div class="container text-white py-5">

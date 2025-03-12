@@ -9,7 +9,7 @@ api = Blueprint('api', __name__)
 # region Subject
 
 
-@api.route('/subject', methods=['GET'])
+@api.route('/subjects', methods=['GET'])
 def get_subjects():
     subList = []
     subjects = Subject.query.all()
@@ -29,12 +29,41 @@ def add_subject():
     db.session.commit()
     return jsonify({"message": "Subject added successfully"}), 200
 
+
+@api.route('/subject/<int:id>', methods=['GET'])
+def get_subject(id):
+    subject = Subject.query.filter_by(id=id).first()
+    if subject == None:
+        return jsonify({"error": "Subject not found"}), 404
+    return jsonify({"data": subject.toJson()}), 200
+
+
+@api.route('/subject/<int:id>', methods=['DELETE'])
+def delete_subject(id):
+    subject = Subject.query.filter_by(id=id).first()
+    if subject == None:
+        return jsonify({"error": "Subject not found"}), 404
+    db.session.delete(subject)
+    db.session.commit()
+    return jsonify({"message": "Subject deleted successfully"}), 200
+
+
+@api.route("/subject/<int:id>", methods=['PUT'])
+def update_subject(id):
+    data = request.get_json()
+    subject = Subject.query.filter_by(id=id).first()
+    if subject == None:
+        return jsonify({"error": "Subject not found"}), 404
+    subject.name = data['name']
+    subject.description = data['description']
+    db.session.commit()
+    return jsonify({"message": "Subject updated successfully"}), 200
 # endregion
 
 # region Chapter
 
 
-@api.route('/chapter', methods=['GET'])
+@api.route('/chapters', methods=['GET'])
 def get_chapters():
     chapters = []
     chapterList = Chapter.query.all()
@@ -46,7 +75,8 @@ def get_chapters():
 @api.route('/chapter', methods=['POST'])
 def add_chapter():
     data = request.get_json()
-    chapter = Chapter.query.filter_by(name=data['name']).first()
+    chapter = Chapter.query.filter_by(
+        name=data['name'], subject_id=data['subject_id']).first()
     if data['subject_id'] == None:
         return jsonify({'error': "Subject ID is required"}), 400
     if chapter:
@@ -56,12 +86,42 @@ def add_chapter():
     db.session.add(chapter)
     db.session.commit()
     return jsonify({"message": "Chapter added successfully"}), 200
+
+
+@api.route('/chapter/<int:id>', methods=['GET'])
+def get_chapter(id):
+    chapter = Chapter.query.filter_by(id=id).first()
+    if chapter == None:
+        return jsonify({"error": "Chapter not found"}), 404
+    return jsonify({"data": chapter.toJson()}), 200
+
+
+@api.route('/chapter/<int:id>', methods=['DELETE'])
+def delete_chapter(id):
+    chapter = Chapter.query.filter_by(id=id).first()
+    if chapter == None:
+        return jsonify({"error": "Chapter not found"}), 404
+    db.session.delete(chapter)
+    db.session.commit()
+    return jsonify({"message": "Chapter deleted successfully"}), 200
+
+
+@api.route("/chapter/<int:id>", methods=['PUT'])
+def update_chapter(id):
+    data = request.get_json()
+    chapter = Chapter.query.filter_by(id=id).first()
+    if chapter == None:
+        return jsonify({"error": "Chapter not found"}), 404
+    chapter.name = data['name']
+    chapter.description = data['description']
+    db.session.commit()
+    return jsonify({"message": "Chapter updated successfully"}), 200
 # endregion
 
 # region Question
 
 
-@api.route('/question', methods=['GET'])
+@api.route('/questions', methods=['GET'])
 def get_questions():
     questionList = []
     questions = Questions.query.all()
@@ -82,12 +142,42 @@ def add_question():
     db.session.commit()
     return jsonify({"message": "Question added successfully"}), 200
 
+
+@api.route('/question/<int:id>', methods=['GET'])
+def get_question(id):
+    question = Questions.query.filter_by(id=id).first()
+    if question == None:
+        return jsonify({"error": "Question not found"}), 404
+    return jsonify({"data": question.toJson()}), 200
+
+
+@api.route('/question/<int:id>', methods=['DELETE'])
+def delete_question(id):
+    question = Questions.query.filter_by(id=id).first()
+    if question == None:
+        return jsonify({"error": "Question not found"}), 404
+    db.session.delete(question)
+    db.session.commit()
+    return jsonify({"message": "Question deleted successfully"}), 200
+
+
+@api.route('/question/<int:id>', methods=['PUT'])
+def update_question(id):
+    data = request.get_json()
+    question = Questions.query.filter_by(id=id).first()
+    if question == None:
+        return jsonify({"error": "Question not found"}), 404
+    question.question = data['question']
+    question.options = json.dumps(data['options'])
+    question.answer = data['answer']
+    db.session.commit()
+    return jsonify({"message": "Question updated successfully"}), 200
 # endregion
 
 # region Quiz
 
 
-@api.route("/quiz", methods=["GET"])
+@api.route("/quizzes", methods=["GET"])
 def get_quiz():
     quizList = []
     questions = Questions.query.all()
@@ -102,6 +192,38 @@ def add_quiz():
     quiz = Quiz(chapter_id=data['chapter_id'],
                 date=datetime(data['date']), time_duration=data['time_duration'])
     db.session.add(quiz)
+
+
+@api.route('/quiz/<int:id>', methods=['GET'])
+def get_quizzes(id):
+    quiz = Quiz.query.filter_by(id=id).first()
+    if quiz == None:
+        return jsonify({"error": "Quiz not found"}), 404
+    return jsonify({"data": quiz.toJson()}), 200
+
+
+@api.route('/quiz/<int:id>', methods=['DELETE'])
+def delete_quiz():
+    data = request.get_json()
+    quiz = Quiz.query.filter_by(id=data['id']).first()
+    if quiz == None:
+        return jsonify({"error": "Quiz not found"}), 404
+    db.session.delete(quiz)
+    db.session.commit()
+    return jsonify({"message": "Quiz deleted successfully"}), 200
+
+
+@api.route("/quiz/<int:id>", methods=['PUT'])
+def update_quiz(id):
+    data = request.get_json()
+    quiz = Quiz.query.filter_by(id=id).first()
+    if quiz == None:
+        return jsonify({"error": "Quiz not found"}), 404
+    quiz.chapter_id = data['chapter_id']
+    quiz.date = datetime(data['date'])
+    quiz.time_duration = data['time_duration']
+    db.session.commit()
+    return jsonify({"message": "Quiz updated successfully"}), 200
 # endregion
 
 # region Scores
@@ -139,9 +261,41 @@ def add_score():
 
     totalScore = (totalScore/maxScore)*100
     score = Scores(user_id=data['user_id'], quiz_id=data['quiz_id'],
-                   attempt_timestamp=datetime.now(), score=totalScore, user_id=data['user_id'])
+                   attempt_timestamp=datetime.now(), score=totalScore)
     db.session.add(score)
     db.session.commit()
     return jsonify({"message": "Quiz submitted successfully"}), 200
 
+
+@api.route('/scores/<int:id>', methods=['GET'])
+def get_score(id):
+    quiz = Quiz.query.filter_by(id=id).first()
+    if quiz == None:
+        return jsonify({"error": "Quiz not found"}), 404
+    return jsonify({"data": quiz.toJson()}), 200
+
+
+@api.route('/scores', methods=['DELETE'])
+def delete_score():
+    data = request.get_json()
+    score = Scores.query.filter_by(id=data['id']).first()
+    if score == None:
+        return jsonify({"error": "Score not found"}), 404
+    db.session.delete(score)
+    db.session.commit()
+    return jsonify({"message": "Score deleted successfully"}), 200
+
+
+@api.route('/scores/<int:id>', methods=['PUT'])
+def update_score(id):
+    data = request.get_json()
+    score = Scores.query.filter_by(id=id).first()
+    if score == None:
+        return jsonify({"error": "Score not found"}), 404
+    score.user_id = data['user_id']
+    score.quiz_id = data['quiz_id']
+    score.attempt_timestamp = datetime(data['attempt_timestamp'])
+    score.score = data['score']
+    db.session.commit()
+    return jsonify({"message": "Score updated successfully"}), 200
 # endregion
