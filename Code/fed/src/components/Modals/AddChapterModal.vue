@@ -2,19 +2,21 @@
 import axios from "axios";
 import { ref } from "vue";
 import { GetSubjects } from "../../main";
+import { useToast } from "vue-toastification";
 
 const ChapterModalOpen = ref(false);
+const toast = useToast({ duration: 2000, dismissible: true });
 const props = defineProps({
   subjectId: Number,
 });
 const closeChapterModal = () => {
+  subName.value = "";
+  subDescription.value = "";
   ChapterModalOpen.value = false;
-  subName = "";
-  subDescription = "";
 };
 const subName = ref("");
 const subDescription = ref("");
-const handleAddQuestion = async (e) => {
+const handleAddChapter = async (e) => {
   e.preventDefault();
   await axios
     .post(
@@ -33,11 +35,11 @@ const handleAddQuestion = async (e) => {
     )
     .then(
       () => {
-        alert("Subject added successfully");
+        toast.success("Chapter added successfully");
         GetSubjects();
       },
       () => {
-        alert("Error adding subject");
+        toast.error("Error adding subject");
       }
     );
   closeChapterModal();
@@ -57,7 +59,7 @@ const handleAddQuestion = async (e) => {
         <div class="modal-body">
           <form
             class="d-flex flex-column my-5 px-4 gap-4"
-            @submit="handleAddQuestion"
+            @submit="handleAddChapter"
           >
             <input
               class="fs-3"

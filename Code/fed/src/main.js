@@ -3,11 +3,24 @@ import './style.css'
 import App from './App.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import Dashboard from './Pages/Dashboard.vue'
+import QuizManagement from './Pages/QuizManagement.vue'
+import Scores from './Pages/Scores.vue'
+import Summary from './Pages/Summary.vue'
+import PageNotFound from './Pages/PageNotFound.vue'
 import { createStore } from 'vuex'
 import axios from 'axios'
 import VueCookies from 'vue-cookies'
+import Toast from "vue-toastification";
+import 'vue-toastification/dist/index.css';
 
 const app = createApp(App)
+
+app.use(Toast, {
+    timeout: 2000,
+    closeOnClick: true,
+    pauseOnHover: false,
+    pauseOnFocusLoss: false,
+})
 const store = createStore({
     state() {
         return {
@@ -53,11 +66,14 @@ export const ApiService = () => axios.create({
 GetSubjects();
 const router = createRouter({
     history: createWebHistory(),
+    strict: true,
+
     routes: [
         { path: "/", component: Dashboard },
-        { path: "/quiz", component: () => import('./Pages/QuizManagement.vue') },
-        { path: "/scores", component: () => import('./Pages/Scores.vue') },
-        { path: '/summary', component: () => import('./Pages/Summary.vue') }
+        { path: "/quiz", component: QuizManagement },
+        { path: "/scores", component: Scores },
+        { path: '/summary', component: Summary },
+        { path: '/:pathMatch(.*)*', component: PageNotFound },
     ],
 });
 app.use(router);
