@@ -58,7 +58,7 @@ const closeAddQuizModal = () => {
 <template>
   <div>
     <button
-      class="fs-3 px-4 btn bg-white rounded-pill"
+      class="fs-3 px-4 btn bg-white text-black rounded-pill"
       @click="() => (AddQuizModalOpen = true)"
     >
       Add Quiz
