@@ -1,4 +1,4 @@
-import { computed, createApp } from 'vue'
+import { createApp } from 'vue'
 import './style.css'
 import App from './App.vue'
 import { createRouter, createWebHistory } from 'vue-router'
@@ -13,6 +13,7 @@ import VueCookies from 'vue-cookies'
 import Toast from "vue-toastification";
 import 'vue-toastification/dist/index.css';
 
+const isLoggedIn = VueCookies.get("access_token") != null;
 const app = createApp(App)
 
 app.use(Toast, {
@@ -27,7 +28,8 @@ const store = createStore({
             user: {},
             count: 0,
             subjects: [],
-            quizzes: []
+            quizzes: [],
+            chapters: []
         }
     },
     mutations: {
@@ -36,6 +38,12 @@ const store = createStore({
         },
         setSubjects(state, payload) {
             state.subjects = payload
+        },
+        setQuizzes(state, payload) {
+            state.quizzes = payload
+        },
+        setChapters(state, payload) {
+            state.chapters = payload
         }
     },
     getters: {
@@ -44,26 +52,32 @@ const store = createStore({
         },
         getSubjects(state) {
             return state.subjects
+        },
+        getQuizzes(state) {
+            return state.quizzes
+        },
+        getChapters(state) {
+            return state.chapters
         }
     }
-
 })
 
-if (VueCookies.get("access_token") != null) {
+if (isLoggedIn) {
     await axios.get("http://localhost:5000/getuser", { withCredentials: true }).then((data) => store.commit('setUser', data.data), (err) => console.log(err.response.data))
 }
 export const GetSubjects = async () => {
     await axios.get('http://localhost:5000/api/subjects', { withCredentials: true }).then((data) => store.commit('setSubjects', data.data.data), (err) => console.log(err.response.data))
 }
-
-export const ApiService = () => axios.create({
-    baseURL: 'http://localhost:5000/api',
-    withCredentials: true,
-    headers: {
-        'Content-Type': 'application/json',
-    }
-})
+export const GetQuizes = async () => {
+    await axios.get("http://localhost:5000/api/quizzes", { withCredentials: true }).then((data) => store.commit('setQuizzes', data.data.data), (err) => console.log(err.response.data))
+}
+export const GetChapters = async () => {
+    await axios.get("http://localhost:5000/api/chapters", { withCredentials: true }).then((data) => store.commit('setChapters', data.data.data), (err) => console.log(err.response.data))
+}
 GetSubjects();
+GetQuizes();
+GetChapters();
+
 const router = createRouter({
     history: createWebHistory(),
     strict: true,

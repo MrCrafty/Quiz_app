@@ -21,12 +21,18 @@ const xp = isLoggedIn ? JSON.parse(store.state.user.xp) : "";
         >
         <ul class="nav align-items-center">
           <li class="nav-link"><router-link to="/">Home</router-link></li>
-          <!-- <li class="nav-link">
-            <router-link to="/search">Search</router-link>
+          <li
+            v-if="isLoggedIn && store.state.user.role == 'admin'"
+            class="nav-link"
+          >
+            <router-link to="/quiz" class="me-3">Quiz</router-link>
           </li>
-          <li class="nav-link">
-            <router-link to="/summary">Summary</router-link>
-          </li> -->
+          <li
+            v-if="isLoggedIn && store.state.user.role == 'user'"
+            class="nav-link"
+          >
+            <router-link to="/scores" class="me-3">Scores</router-link>
+          </li>
           <li v-if="isLoggedIn">
             <router-link
               class="profile-btn btn rounded-pill border-1 border-white text-white"

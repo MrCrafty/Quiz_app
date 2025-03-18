@@ -1,5 +1,6 @@
 from flask_bcrypt import bcrypt
 from sqlalchemy import DateTime
+from datetime import datetime
 from . import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import json
@@ -59,7 +60,8 @@ class Chapter(db.Model):
         return {
             "id": self.id,
             "name": self.name,
-            "description": self.description
+            "description": self.description,
+            "questions": [ques.toJson() for ques in self.questions]
         }
 
 
@@ -91,7 +93,7 @@ class Quiz(db.Model):
     id = db.Column(db.Integer(), primary_key=True, autoincrement=True)
     chapter_id = db.Column(db.Integer(), db.ForeignKey(
         'chapter.id'), nullable=False)
-    date = db.Column(DateTime)
+    date = db.Column(db.DateTime, nullable=False)
     time_duration = db.Column(db.Integer(), nullable=False)
 
     def __init__(self, chapter_id, date, time_duration):

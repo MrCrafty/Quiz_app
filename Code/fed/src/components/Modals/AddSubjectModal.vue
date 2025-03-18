@@ -1,7 +1,7 @@
 <script setup>
 import axios from "axios";
 import { ref } from "vue";
-import { ApiService, GetSubjects } from "../../main";
+import { GetSubjects } from "../../main";
 const AddSubjectModelOpen = ref(false);
 const subName = ref("");
 const subDescription = ref("");

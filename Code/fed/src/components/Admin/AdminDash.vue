@@ -8,9 +8,7 @@ const store = useStore();
 const subjects = computed(() => store.getters.getSubjects);
 </script>
 <template>
-  <div
-    class="container mt-4 pt-5 border border-1 border-bottom-0 border-end-0 border-start-0 border-dark"
-  >
+  <div class="container my-4">
     <div class="d-flex justify-content-between">
       <h2 class="text-white fs-1">Subjects</h2>
       <AddSubjectModel />

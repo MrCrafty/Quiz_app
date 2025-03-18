@@ -133,9 +133,10 @@ def get_questions():
 @api.route("/question", methods=['POST'])
 def add_question():
     data = request.get_json()
-    question = Questions.query.filter_by(question=data['question']).first()
+    question = Questions.query.filter_by(
+        question=data['question'], chapter_id=data["chapter_id"]).first()
     if question:
-        return jsonify({"error": "Question already exists"}), 400
+        return jsonify({"error": "Question already exists for this chapter"}), 400
     question = Questions(question=data['question'], options=json.dumps(data['options']),
                          answer=data['answer'], chapter_id=data['chapter_id'])
     db.session.add(question)
@@ -180,18 +181,24 @@ def update_question(id):
 @api.route("/quizzes", methods=["GET"])
 def get_quiz():
     quizList = []
-    questions = Questions.query.all()
-    for question in questions:
-        quizList.append(question.toJson())
+    quizzes = Quiz.query.all()
+    for quiz in quizzes:
+        quizList.append(quiz.toJson())
     return jsonify({"data": quizList}), 200
 
 
 @api.route('/quiz', methods=['POST'])
 def add_quiz():
     data = request.get_json()
-    quiz = Quiz(chapter_id=data['chapter_id'],
-                date=datetime(data['date']), time_duration=data['time_duration'])
+    print(data)
+    chapterId = int(data['chapter_id'])
+    timeDuration = int(data['time_duration'])
+    quizDate = datetime.strptime(data['date'], "%Y-%m-%dT%H:%M")
+    quiz = Quiz(chapter_id=chapterId, date=quizDate,
+                time_duration=timeDuration)
     db.session.add(quiz)
+    db.session.commit()
+    return jsonify({"data": "quiz added successfully"}), 200
 
 
 @api.route('/quiz/<int:id>', methods=['GET'])
